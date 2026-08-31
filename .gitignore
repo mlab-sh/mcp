@@ -1,0 +1,4 @@
+key.pem
+*.pem
+.mcpregistry_*
+mcp-publisher

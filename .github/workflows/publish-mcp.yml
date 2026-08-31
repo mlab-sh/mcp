@@ -1,0 +1,105 @@
+name: publish-mcp
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: mcp-registry-publish
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install mcp-publisher
+        run: |
+          set -euo pipefail
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" \
+            -o mcp-publisher.tar.gz
+          tar xzf mcp-publisher.tar.gz mcp-publisher
+          chmod +x mcp-publisher
+          ./mcp-publisher --version
+
+      - name: Set version from tag
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          jq --arg v "$VERSION" '.version = $v' server.json > server.json.tmp
+          mv server.json.tmp server.json
+          cat server.json
+
+      - name: Validate server.json
+        run: ./mcp-publisher validate
+
+      - name: Login (DNS)
+        run: |
+          ./mcp-publisher login dns \
+            --domain mlab.sh \
+            --private-key "${{ secrets.MCP_PRIVATE_KEY }}"
+
+      - name: Publish
+        run: ./mcp-publisher publish
+
+      - name: Verify listing
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            body=$(curl -sS "https://registry.modelcontextprotocol.io/v0.1/servers?search=sh.mlab")
+            if printf '%s' "$body" | grep -q "\"$VERSION\""; then
+              echo "Version $VERSION is live in the registry"
+              exit 0
+            fi
+            echo "Attempt $attempt: version $VERSION not visible yet"
+            sleep 15
+          done
+          echo "Published version $VERSION was not found in the registry listing"
+          printf '%s\n' "$body"
+          exit 1
+
+# Alternative authentication: GitHub OIDC instead of a DNS key.
+#
+# This would remove the MCP_PRIVATE_KEY secret entirely, but it only works for
+# the io.github namespace. Using it means renaming the server to
+# "io.github.mlab-sh/mcp" in server.json, which is a different registry entry
+# from "sh.mlab/mcp". It also requires Owner rights on the mlab-sh org to
+# authenticate the namespace.
+#
+#  publish-oidc:
+#    runs-on: ubuntu-latest
+#    environment: mcp-registry-publish
+#    permissions:
+#      contents: read
+#      id-token: write
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Install mcp-publisher
+#        run: |
+#          set -euo pipefail
+#          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" \
+#            -o mcp-publisher.tar.gz
+#          tar xzf mcp-publisher.tar.gz mcp-publisher
+#          chmod +x mcp-publisher
+#
+#      - name: Set version from tag
+#        run: |
+#          set -euo pipefail
+#          VERSION="${GITHUB_REF_NAME#v}"
+#          jq --arg v "$VERSION" '.version = $v' server.json > server.json.tmp
+#          mv server.json.tmp server.json
+#
+#      - name: Validate server.json
+#        run: ./mcp-publisher validate
+#
+#      - name: Login (GitHub OIDC)
+#        run: ./mcp-publisher login github-oidc
+#
+#      - name: Publish
+#        run: ./mcp-publisher publish

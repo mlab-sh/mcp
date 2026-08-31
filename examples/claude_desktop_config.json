@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mlab": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mlab.sh/mcp",
+        "--header",
+        "Authorization: Bearer mcp_xxx"
+      ]
+    }
+  }
+}

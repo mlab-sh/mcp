@@ -1,0 +1,44 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "sh.mlab/mcp",
+  "title": "mlab.sh",
+  "description": "Threat intelligence: enrich IOCs (IP, domain, URL, hash), search CVEs and actors, scan SBOMs.",
+  "version": "1.0.0",
+  "websiteUrl": "https://mlab.sh",
+  "repository": {
+    "url": "https://github.com/mlab-sh/mcp",
+    "source": "github"
+  },
+  "icons": [
+    {
+      "src": "https://mlab.sh/assets/logo.png",
+      "mimeType": "image/png"
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mlab.sh/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer mcp_xxx static token. Leave empty if your client supports OAuth 2.1 (recommended): the server advertises its authorization server at /.well-known/oauth-authorization-server.",
+          "isRequired": false,
+          "isSecret": true
+        }
+      ]
+    },
+    {
+      "type": "sse",
+      "url": "https://mlab.sh/mcp"
+    }
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "vendor": "Cyber Dream",
+      "docs": "https://doc.mlab.sh/docs/mlab.sh/integrations/mcp",
+      "auth": "oauth2.1",
+      "supportedClients": ["claude.ai", "claude-desktop"]
+    }
+  }
+}
