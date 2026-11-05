@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "sh.mlab/mcp",
   "title": "mlab.sh",
-  "description": "Threat intelligence: enrich IOCs (IP, domain, URL, hash), search CVEs and actors, scan SBOMs.",
-  "version": "1.0.0",
+  "description": "Threat intel and DFIR: IOCs, CVEs, actors, SBOMs, domain scans, cases, memory, Kubernetes, Proxmox.",
+  "version": "1.1.0",
   "websiteUrl": "https://mlab.sh",
   "repository": {
     "url": "https://github.com/mlab-sh/mcp",
