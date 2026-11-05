@@ -3,7 +3,7 @@
   "name": "sh.mlab/mcp",
   "title": "mlab.sh",
   "description": "Threat intel and DFIR: IOCs, CVEs, actors, SBOMs, domain scans, cases, memory, Kubernetes, Proxmox.",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "websiteUrl": "https://mlab.sh",
   "repository": {
     "url": "https://github.com/mlab-sh/mcp",

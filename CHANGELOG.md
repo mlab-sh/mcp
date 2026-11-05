@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.1] - 2026-11-05
+## [1.2.0] - 2026-11-05
 
 ### Added
 
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - README tool list matches the server: 48 tools, grouped as IOC lookups, domain scans and code, CVEs and actors, cases, workspaces, account. Which lookups spend quota is stated per tool.
 - Quotas described as per organization over a rolling 24 hours.
-- `server.json`: version 1.0.1, description covers domain scans, cases, memory forensics, Kubernetes and Proxmox.
+- `server.json`: version 1.2.0, description covers domain scans, cases, memory forensics, Kubernetes and Proxmox.
 
 ### Removed
 
